@@ -1,36 +1,145 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Blockchain Oyunları - Eğitsel Oyun Platformu
 
-## Getting Started
+Blockchain dersi için tasarlanmış interaktif oyun platformu. Öğrenciler oyunlara katılarak bonus puan kazanır ve dönem sonunda bu puanlar sınav bonusuna dönüşür.
 
-First, run the development server:
+## 🎮 Özellikler
+
+- **Kullanıcı Sistemi**: Öğrenci ve admin rolleri
+- **Oyun Yönetimi**: Admin tarafından kontrol edilen haftalık oyunlar
+- **Bonus Sistemi**: Oyun performansına göre puan kazanma
+- **Güvenli Veri Tabanı**: Prisma ile SQLite (production'da PostgreSQL kullanılabilir)
+- **Responsive Tasarım**: Mobil ve masaüstü uyumlu
+
+## 🚀 Kurulum
+
+### 1. Bağımlılıkları Yükleyin
+
+```bash
+npm install
+```
+
+### 2. Environment Değişkenlerini Ayarlayın
+
+`.env` dosyası oluşturun (veya `.env.example`'ı kopyalayın):
+
+```bash
+DATABASE_URL="file:./dev.db"
+NEXTAUTH_SECRET="blockchain-game-secret-change-in-production"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+### 3. Veritabanını Hazırlayın
+
+```bash
+# Prisma migrate
+npx prisma migrate dev
+
+# Seed (örnek kullanıcılar ve oyunlar)
+npm run seed
+```
+
+### 4. Uygulamayı Başlatın
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Tarayıcınızda `http://localhost:3000` adresine gidin.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 👤 Giriş Bilgileri
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Admin (Hulusi Giray)
+- **Öğrenci Numarası**: `2000004677`
+- **Şifre**: `admin123`
 
-## Learn More
+### Giriş Sistemi
+- Giriş yaparken sadece **10 haneli öğrenci numaranızı** girin
+- `@stu.iku.edu.tr` otomatik olarak eklenir
+- Örnek: `2000004677` yazın → Sistem `2000004677@stu.iku.edu.tr` olarak işler
 
-To learn more about Next.js, take a look at the following resources:
+### Örnek Öğrenciler (Eski Format - Güncellenecek)
+- **E-postalar**: `ahmet@student.edu`, `mehmet@student.edu`, vs.
+- **Şifre**: `student123`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎯 Kullanım
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Öğrenci Olarak
 
-## Deploy on Vercel
+1. Giriş yapın
+2. **Oyun** sayfasında aktif oyunu bekleyin
+3. Admin oyunu başlattığında katılın
+4. **Hesabım** sayfasından bonus puanlarınızı görüntüleyin ve şifrenizi değiştirin
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Admin Olarak
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Admin hesabıyla giriş yapın
+2. **Admin Panel**'e gidin
+3. Yeni oyun başlatın:
+   - Oyun türünü seçin (Bit Tahmin Oyunu)
+   - Hafta numarasını girin
+   - Bit uzunluğunu ve doğru cevabı belirleyin
+4. Katılımcıları takip edin
+5. Oyunu bitirin ve puanları otomatik dağıtın
+
+## 🎲 Oyunlar
+
+### Bit Tahmin Oyunu
+
+Bitcoin'deki anahtar uzunluğunu anlamak için tasarlanmış oyun. Admin gizli bir sayı tutar, öğrenciler tahmin eder.
+
+**Puanlama**:
+- İlk doğru tahmin: 10 puan
+- İkinci doğru tahmin: 7 puan
+- Üçüncü doğru tahmin: 5 puan
+- Diğer doğru tahminler: 3 puan
+
+## 📦 Production'a Yükleme
+
+### Vercel'e Deploy
+
+1. Projeyi GitHub'a yükleyin
+2. Vercel'de projeyi import edin
+3. Environment değişkenlerini ekleyin
+4. Deploy edin
+
+### PostgreSQL Kullanımı
+
+Production'da SQLite yerine PostgreSQL kullanmanız önerilir:
+
+1. `prisma/schema.prisma`'da provider'ı değiştirin:
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
+
+2. DATABASE_URL'i PostgreSQL connection string olarak güncelleyin
+3. Migrate çalıştırın: `npx prisma migrate deploy`
+
+## 🔧 Teknolojiler
+
+- **Framework**: Next.js 15
+- **Authentication**: NextAuth.js
+- **Database**: Prisma + SQLite (dev) / PostgreSQL (prod)
+- **Styling**: Tailwind CSS
+- **TypeScript**: Type-safe kod
+
+## 📝 Yeni Oyun Ekleme
+
+1. `src/components/games/` klasörüne yeni oyun componenti ekleyin
+2. `src/app/game/page.tsx`'da game code kontrolü ekleyin
+3. `src/app/admin/page.tsx`'da oyun seçeneklerini ekleyin
+4. Gerekli API endpoint'lerini oluşturun
+
+## 🤝 Katkıda Bulunma
+
+Bu proje eğitim amaçlıdır. Önerileriniz için issue açabilirsiniz.
+
+## 📄 Lisans
+
+MIT
+
+## 🎓 Yapımcı Notları
+
+Bu platform, blockchain derslerinde kullanılan oyunları dijitalleştirmek ve öğrenci katılımını artırmak için geliştirilmiştir. Her hafta farklı oyunlar ekleyerek dersi daha eğlenceli hale getirebilirsiniz!

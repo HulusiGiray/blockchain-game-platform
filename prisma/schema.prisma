@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String   @id @default(cuid())
+  username           String   @unique
+  email              String   @unique
+  passwordHash       String
+  role               Role     @default(STUDENT)
+  createdAt          DateTime @default(now())
+  lastLoginAt        DateTime?
+  passwordChangedAt  DateTime?
+  submissions        Submission[]
+  scores             Score[]
+  walletTxs          WalletTransaction[]
+  auditLogs          AuditLog[] @relation("UserAuditActor")
+  waitingRooms       GameWaitingRoom[]
+}
+
+model Game {
+  id               String   @id @default(cuid())
+  code             String   @unique
+  title            String
+  description      String?
+  configJson       String?
+  isActiveTemplate Boolean  @default(true)
+  instances        GameInstance[]
+  createdAt        DateTime @default(now())
+}
+
+model GameInstance {
+  id          String      @id @default(cuid())
+  game        Game        @relation(fields: [gameId], references: [id])
+  gameId      String
+  weekNo      Int
+  status      GameStatus  @default(SCHEDULED)
+  config      String?     // JSON: { ownerPlayerId, players, gamePhase, etc }
+  startAt     DateTime?
+  endAt       DateTime?
+  createdBy   String
+  createdAt   DateTime    @default(now())
+  submissions Submission[]
+  scores      Score[]
+  waitingRoom GameWaitingRoom[]
+}
+
+model Submission {
+  id             String       @id @default(cuid())
+  gameInstance   GameInstance @relation(fields: [gameInstanceId], references: [id])
+  gameInstanceId String
+  user           User         @relation(fields: [userId], references: [id])
+  userId         String
+  submissionType String       // "GUESS" veya "SIGN"
+  payloadJson    String       // Tahmin veya imza bilgisi
+  isValid        Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+}
+
+model Score {
+  id             String       @id @default(cuid())
+  gameInstance   GameInstance @relation(fields: [gameInstanceId], references: [id])
+  gameInstanceId String
+  user           User         @relation(fields: [userId], references: [id])
+  userId         String
+  points         Int
+  reason         String?
+  createdAt      DateTime     @default(now())
+}
+
+model WalletTransaction {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  deltaPoints Int
+  note        String?
+  refScoreId  String?
+  grantedBy   String?
+  grantedByName String?
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actor       User     @relation("UserAuditActor", fields: [actorUserId], references: [id])
+  actorUserId String
+  action      String
+  targetType  String?
+  targetId    String?
+  payloadJson String?
+  createdAt   DateTime @default(now())
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+model GameWaitingRoom {
+  id             String       @id @default(cuid())
+  gameInstance   GameInstance @relation(fields: [gameInstanceId], references: [id], onDelete: Cascade)
+  gameInstanceId String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  joinedAt       DateTime     @default(now())
+  isReady        Boolean      @default(true)
+
+  @@unique([gameInstanceId, userId])
+}
+
+model DeletedUser {
+  id            String   @id @default(cuid())
+  username      String
+  email         String
+  role          Role
+  totalPoints   Int      @default(0)
+  gamesPlayed   Int      @default(0)
+  createdAt     DateTime
+  deletedAt     DateTime @default(now())
+  deletedBy     String
+  deletedByUsername String
+}
+
+enum GameStatus {
+  SCHEDULED
+  ACTIVE
+  ENDED
+  ARCHIVED
+}
