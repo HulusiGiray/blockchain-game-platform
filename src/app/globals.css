@@ -72,9 +72,9 @@ body {
 }
 
 .animate-parachute-drop {
-  animation: parachuteDrop 12s linear infinite;
+  animation: parachuteDrop 20s linear infinite;
 }
 
 .animate-parachute-drop-2 {
-  animation: parachuteDrop2 15s linear infinite;
+  animation: parachuteDrop2 20s linear infinite 10s;
 }
