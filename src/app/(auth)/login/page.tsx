@@ -63,7 +63,8 @@ export default function LoginPage() {
 
       {/* Paraşüt 2 - Sağ Taraf - Bilgilendirme */}
       <div 
-        className="absolute left-1/2 md:right-1/4 transform -translate-x-1/2 md:translate-x-1/2 z-50 animate-parachute-drop-2"
+        className="absolute left-1/2 md:right-1/4 transform -translate-x-1/2 md:translate-x-1/2 z-50 animate-parachute-drop-2 opacity-0"
+        style={{ animationFillMode: 'forwards' }}
       >
         <div className="text-center scale-75 md:scale-100">
           <div className="text-4xl md:text-6xl mb-2">🪂</div>
