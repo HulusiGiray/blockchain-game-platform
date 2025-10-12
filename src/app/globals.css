@@ -43,19 +43,19 @@ body {
 
 @keyframes parachuteDrop {
   from {
-    transform: translateX(-50%) translateY(-100vh);
+    transform: translateY(-100vh);
   }
   to {
-    transform: translateX(-50%) translateY(calc(100vh + 100px));
+    transform: translateY(calc(100vh + 100px));
   }
 }
 
 @keyframes parachuteDrop2 {
   from {
-    transform: translateX(50%) translateY(-100vh);
+    transform: translateY(-100vh);
   }
   to {
-    transform: translateX(50%) translateY(calc(100vh + 100px));
+    transform: translateY(calc(100vh + 100px));
   }
 }
 
