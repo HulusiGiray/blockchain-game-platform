@@ -1,145 +1,223 @@
-# Blockchain Oyunları - Eğitsel Oyun Platformu
+# 🎮 Blockchain Game Platform
 
-Blockchain dersi için tasarlanmış interaktif oyun platformu. Öğrenciler oyunlara katılarak bonus puan kazanır ve dönem sonunda bu puanlar sınav bonusuna dönüşür.
+> An interactive educational game platform for blockchain courses where students earn bonus points by participating in weekly games.
 
-## 🎮 Özellikler
+**Live Demo:** [blockchain-game-platform.vercel.app](https://blockchain-game-platform.vercel.app)
 
-- **Kullanıcı Sistemi**: Öğrenci ve admin rolleri
-- **Oyun Yönetimi**: Admin tarafından kontrol edilen haftalık oyunlar
-- **Bonus Sistemi**: Oyun performansına göre puan kazanma
-- **Güvenli Veri Tabanı**: Prisma ile SQLite (production'da PostgreSQL kullanılabilir)
-- **Responsive Tasarım**: Mobil ve masaüstü uyumlu
+---
 
-## 🚀 Kurulum
+## ✨ Features
 
-### 1. Bağımlılıkları Yükleyin
+- **Role-Based Access**: Student and admin user management
+- **Real-Time Games**: Interactive weekly games controlled by instructors
+- **Bonus System**: Performance-based point distribution
+- **Leaderboard**: Track student rankings and achievements
+- **Responsive Design**: Fully optimized for mobile and desktop
+- **Secure Authentication**: NextAuth.js with session management
+- **Production-Ready**: PostgreSQL database with Prisma ORM
+
+---
+
+## 🚀 Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Authentication**: NextAuth.js
+- **Database**: Prisma + PostgreSQL (Neon)
+- **Styling**: Tailwind CSS
+- **Deployment**: Vercel
+- **TypeScript**: Type-safe development
+
+---
+
+## 📦 Installation
+
+### Prerequisites
+- Node.js 18+
+- PostgreSQL database (or use Neon/Vercel Postgres)
+
+### Setup
 
 ```bash
+# 1. Clone the repository
+git clone https://github.com/HulusiGiray/blockchain-game-platform.git
+cd blockchain-game-platform
+
+# 2. Install dependencies
 npm install
-```
 
-### 2. Environment Değişkenlerini Ayarlayın
-
-`.env` dosyası oluşturun (veya `.env.example`'ı kopyalayın):
-
-```bash
-DATABASE_URL="file:./dev.db"
-NEXTAUTH_SECRET="blockchain-game-secret-change-in-production"
+# 3. Configure environment variables
+# Create .env file with:
+DATABASE_URL="postgresql://..."
+NEXTAUTH_SECRET="your-secret-key"
 NEXTAUTH_URL="http://localhost:3000"
-```
 
-### 3. Veritabanını Hazırlayın
+# 4. Run database migrations
+npx prisma migrate deploy
 
-```bash
-# Prisma migrate
-npx prisma migrate dev
+# 5. Seed initial data (admin user + games)
+npx tsx prisma/seed.ts
 
-# Seed (örnek kullanıcılar ve oyunlar)
-npm run seed
-```
-
-### 4. Uygulamayı Başlatın
-
-```bash
+# 6. Start development server
 npm run dev
 ```
 
-Tarayıcınızda `http://localhost:3000` adresine gidin.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 👤 Giriş Bilgileri
+---
 
-### Admin (Hulusi Giray)
-- **Öğrenci Numarası**: `2000004677`
-- **Şifre**: `admin123`
+## 🔐 Default Credentials
 
-### Giriş Sistemi
-- Giriş yaparken sadece **10 haneli öğrenci numaranızı** girin
-- `@stu.iku.edu.tr` otomatik olarak eklenir
-- Örnek: `2000004677` yazın → Sistem `2000004677@stu.iku.edu.tr` olarak işler
+### Admin Account
+- **Student ID**: `2000004677`
+- **Password**: `admin123`
 
-### Örnek Öğrenciler (Eski Format - Güncellenecek)
-- **E-postalar**: `ahmet@student.edu`, `mehmet@student.edu`, vs.
-- **Şifre**: `student123`
+> **Note**: Only enter the 10-digit student number. The system automatically appends `@stu.iku.edu.tr`
 
-## 🎯 Kullanım
+---
 
-### Öğrenci Olarak
+## 🎯 Usage
 
-1. Giriş yapın
-2. **Oyun** sayfasında aktif oyunu bekleyin
-3. Admin oyunu başlattığında katılın
-4. **Hesabım** sayfasından bonus puanlarınızı görüntüleyin ve şifrenizi değiştirin
+### For Students
+1. Log in with your credentials
+2. Navigate to **Game** tab and wait for active game
+3. Participate when instructor starts a game
+4. View your points in **My Account** and check **Leaderboard**
 
-### Admin Olarak
+### For Instructors (Admin)
+1. Log in with admin credentials
+2. Go to **Admin Panel**
+3. Create new users (students)
+4. Start a game and monitor live submissions
+5. End game and distribute points automatically
 
-1. Admin hesabıyla giriş yapın
-2. **Admin Panel**'e gidin
-3. Yeni oyun başlatın:
-   - Oyun türünü seçin (Bit Tahmin Oyunu)
-   - Hafta numarasını girin
-   - Bit uzunluğunu ve doğru cevabı belirleyin
-4. Katılımcıları takip edin
-5. Oyunu bitirin ve puanları otomatik dağıtın
+---
 
-## 🎲 Oyunlar
+## 🎲 Available Games
 
-### Bit Tahmin Oyunu
+### Lost Key Operation (Kayıp Anahtar Operasyonu)
+A multi-phase cryptographic simulation game teaching digital signatures and verification.
 
-Bitcoin'deki anahtar uzunluğunu anlamak için tasarlanmış oyun. Admin gizli bir sayı tutar, öğrenciler tahmin eder.
+**Phases:**
+1. **Lobby**: Players join and wait
+2. **Guessing**: Each player guesses a secret number
+3. **Signing**: Players sign their guess with their private key
+4. **Results**: Verification and scoring
 
-**Puanlama**:
-- İlk doğru tahmin: 10 puan
-- İkinci doğru tahmin: 7 puan
-- Üçüncü doğru tahmin: 5 puan
-- Diğer doğru tahminler: 3 puan
+**Scoring:**
+- Correct guess: +10 points
+- Signature participation: +3 points
+- Additional hacker bonus for specific scenarios
 
-## 📦 Production'a Yükleme
+---
 
-### Vercel'e Deploy
+## 🚀 Deployment
 
-1. Projeyi GitHub'a yükleyin
-2. Vercel'de projeyi import edin
-3. Environment değişkenlerini ekleyin
-4. Deploy edin
+### Deploy to Vercel
 
-### PostgreSQL Kullanımı
+1. **Push to GitHub**
+   ```bash
+   git push origin main
+   ```
 
-Production'da SQLite yerine PostgreSQL kullanmanız önerilir:
+2. **Connect to Vercel**
+   - Import repository at [vercel.com](https://vercel.com)
+   - Add environment variables
+   - Deploy automatically
 
-1. `prisma/schema.prisma`'da provider'ı değiştirin:
-```prisma
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+3. **Add Database (Neon)**
+   - Install Neon integration in Vercel
+   - Database URL auto-configured
+   - Run migrations in production
+
+4. **Seed Production Database**
+   ```bash
+   vercel env pull
+   npx tsx prisma/seed.ts
+   ```
+
+---
+
+## 📁 Project Structure
+
+```
+├── prisma/
+│   ├── schema.prisma          # Database schema
+│   ├── migrations/            # Migration history
+│   └── seed.ts                # Seed data script
+├── src/
+│   ├── app/                   # Next.js app router
+│   │   ├── (auth)/login/      # Login page
+│   │   ├── admin/             # Admin panel
+│   │   ├── game/              # Game interface
+│   │   ├── account/           # User account page
+│   │   ├── leaderboard/       # Leaderboard page
+│   │   └── api/               # API routes
+│   ├── components/            # React components
+│   │   ├── games/             # Game components
+│   │   ├── Header.tsx         # Navigation header
+│   │   └── Footer.tsx         # Page footer
+│   └── lib/                   # Utilities
+└── public/                    # Static assets
+```
+
+---
+
+## 🔧 Environment Variables
+
+```env
+DATABASE_URL="postgresql://user:pass@host:5432/db?sslmode=require"
+NEXTAUTH_SECRET="generate-with-openssl-rand-base64-32"
+NEXTAUTH_URL="https://your-domain.vercel.app"
+```
+
+---
+
+## 📝 Adding New Games
+
+1. Create game component in `src/components/games/YourGame.tsx`
+2. Add game logic and UI
+3. Register game in admin panel (`src/app/admin/page.tsx`)
+4. Create API endpoints for game actions
+5. Update database schema if needed (Prisma migrations)
+
+Example game structure:
+```tsx
+export default function YourGame({ 
+  gameInstance, 
+  onComplete 
+}: GameProps) {
+  // Game logic here
+  return <div>Your Game UI</div>
 }
 ```
 
-2. DATABASE_URL'i PostgreSQL connection string olarak güncelleyin
-3. Migrate çalıştırın: `npx prisma migrate deploy`
+---
 
-## 🔧 Teknolojiler
+## 🤝 Contributing
 
-- **Framework**: Next.js 15
-- **Authentication**: NextAuth.js
-- **Database**: Prisma + SQLite (dev) / PostgreSQL (prod)
-- **Styling**: Tailwind CSS
-- **TypeScript**: Type-safe kod
+This is an educational project. Contributions, issues, and feature requests are welcome!
 
-## 📝 Yeni Oyun Ekleme
+---
 
-1. `src/components/games/` klasörüne yeni oyun componenti ekleyin
-2. `src/app/game/page.tsx`'da game code kontrolü ekleyin
-3. `src/app/admin/page.tsx`'da oyun seçeneklerini ekleyin
-4. Gerekli API endpoint'lerini oluşturun
+## 📄 License
 
-## 🤝 Katkıda Bulunma
+MIT License - see [LICENSE](LICENSE) file for details
 
-Bu proje eğitim amaçlıdır. Önerileriniz için issue açabilirsiniz.
+---
 
-## 📄 Lisans
+## 👨‍💻 Author
 
-MIT
+**Hulusi Giray Güzel**  
+Developed for blockchain education courses at Istanbul Kültür University
 
-## 🎓 Yapımcı Notları
+---
 
-Bu platform, blockchain derslerinde kullanılan oyunları dijitalleştirmek ve öğrenci katılımını artırmak için geliştirilmiştir. Her hafta farklı oyunlar ekleyerek dersi daha eğlenceli hale getirebilirsiniz!
+## 🙏 Acknowledgments
+
+- Built with Next.js and Vercel
+- Database powered by Neon (Serverless Postgres)
+- Designed for SEN0401 - Blockchain Technology course
+
+---
+
+**⭐ Star this repo if you find it useful!**
