@@ -49,12 +49,12 @@ export default function LoginPage() {
       
       {/* Paraşüt 1 - Sol Taraf - Powered by */}
       <div 
-        className="absolute left-[10%] md:left-1/4 transform -translate-x-1/2 z-50 animate-parachute-drop"
+        className="absolute left-[15%] md:left-1/4 transform -translate-x-1/2 z-50 animate-parachute-drop"
       >
-        <div className="text-center scale-50 md:scale-100">
-          <div className="text-6xl mb-2">🪂</div>
-          <div className="bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg">
-            <p className="text-gray-800 font-semibold text-sm whitespace-nowrap">
+        <div className="text-center scale-75 md:scale-100">
+          <div className="text-4xl md:text-6xl mb-2">🪂</div>
+          <div className="bg-white/90 backdrop-blur-sm px-3 py-2 md:px-6 md:py-3 rounded-full shadow-lg">
+            <p className="text-gray-800 font-semibold text-[10px] md:text-sm whitespace-nowrap">
               Powered by <span className="text-blue-600">SEN0401</span> - Students
             </p>
           </div>
@@ -63,12 +63,12 @@ export default function LoginPage() {
 
       {/* Paraşüt 2 - Sağ Taraf - Bilgilendirme */}
       <div 
-        className="absolute right-[10%] md:right-1/4 transform translate-x-1/2 z-50 animate-parachute-drop-2"
+        className="absolute right-[15%] md:right-1/4 transform translate-x-1/2 z-50 animate-parachute-drop-2"
       >
-        <div className="text-center scale-50 md:scale-100">
-          <div className="text-6xl mb-2">🪂</div>
-          <div className="bg-white/90 backdrop-blur-sm px-6 py-3 rounded-xl shadow-lg max-w-xs">
-            <p className="text-gray-800 font-semibold text-xs leading-relaxed">
+        <div className="text-center scale-75 md:scale-100">
+          <div className="text-4xl md:text-6xl mb-2">🪂</div>
+          <div className="bg-white/90 backdrop-blur-sm px-3 py-2 md:px-6 md:py-3 rounded-xl shadow-lg max-w-[150px] md:max-w-xs">
+            <p className="text-gray-800 font-semibold text-[9px] md:text-xs leading-relaxed">
               Sadece admin kullanıcı oluşturabilir.<br />
               Mevcut hesabınız yok ise admin ile iletişime geçin...
             </p>
