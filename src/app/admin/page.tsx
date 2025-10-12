@@ -48,6 +48,7 @@ export default function AdminPage() {
   const [showNewUserPassword, setShowNewUserPassword] = useState(false)
   const [showBonusModal, setShowBonusModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState<any>(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [bonusAmount, setBonusAmount] = useState('')
   const [bonusReason, setBonusReason] = useState('')
   const [showConfirmation, setShowConfirmation] = useState(false)
@@ -398,15 +399,28 @@ export default function AdminPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       
-      <div className="flex-1 flex">
+      {/* Mobil Menü Butonu */}
+      <button
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        className="md:hidden fixed bottom-4 right-4 z-50 bg-purple-600 text-white p-4 rounded-full shadow-lg"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      
+      <div className="flex-1 flex relative">
         {/* Sol Menü */}
-        <aside className="w-64 bg-white shadow-lg border-r border-gray-200">
+        <aside className={`${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:relative w-64 bg-white shadow-lg border-r border-gray-200 z-40 transition-transform duration-300 h-full overflow-y-auto`}>
           <div className="p-6">
             <h2 className="text-xl font-bold text-gray-800 mb-6 pb-4 border-b-2 border-gray-200">⚡ Admin Panel</h2>
             <nav className="space-y-1">
               <button
-                onClick={() => setActiveMenu('users')}
-                className={`w-full text-left px-4 py-3 transition-colors flex items-center gap-3 border-b-2 border-gray-300 ${
+                onClick={() => {
+                  setActiveMenu('users')
+                  setMobileMenuOpen(false)
+                }}
+                className={`w-full text-left px-4 py-3 transition-colors flex items-center gap-3 border-b-2 border-gray-300 cursor-pointer ${
                   activeMenu === 'users'
                     ? 'bg-blue-50 text-blue-700 font-semibold border-l-4 border-l-blue-600'
                     : 'text-gray-700 hover:bg-gray-50 border-l-4 border-l-transparent'
@@ -424,8 +438,11 @@ export default function AdminPage() {
               </button>
               
               <button
-                onClick={() => setActiveMenu('add-user')}
-                className={`w-full text-left px-4 py-3 transition-colors flex items-center gap-3 border-b-2 border-gray-300 ${
+                onClick={() => {
+                  setActiveMenu('add-user')
+                  setMobileMenuOpen(false)
+                }}
+                className={`w-full text-left px-4 py-3 transition-colors flex items-center gap-3 border-b-2 border-gray-300 cursor-pointer ${
                   activeMenu === 'add-user'
                     ? 'bg-green-50 text-green-700 font-semibold border-l-4 border-l-green-600'
                     : 'text-gray-700 hover:bg-gray-50 border-l-4 border-l-transparent'
@@ -436,8 +453,11 @@ export default function AdminPage() {
               </button>
               
               <button
-                onClick={() => setActiveMenu('trash')}
-                className={`w-full text-left px-4 py-3 transition-colors flex items-center gap-3 border-b-2 border-gray-300 ${
+                onClick={() => {
+                  setActiveMenu('trash')
+                  setMobileMenuOpen(false)
+                }}
+                className={`w-full text-left px-4 py-3 transition-colors flex items-center gap-3 border-b-2 border-gray-300 cursor-pointer ${
                   activeMenu === 'trash'
                     ? 'bg-red-50 text-red-700 font-semibold border-l-4 border-l-red-600'
                     : 'text-gray-700 hover:bg-gray-50 border-l-4 border-l-transparent'
@@ -453,8 +473,11 @@ export default function AdminPage() {
               </button>
               
               <button
-                onClick={() => setActiveMenu('game')}
-                className={`w-full text-left px-4 py-3 transition-colors flex items-center gap-3 border-b-2 border-gray-300 ${
+                onClick={() => {
+                  setActiveMenu('game')
+                  setMobileMenuOpen(false)
+                }}
+                className={`w-full text-left px-4 py-3 transition-colors flex items-center gap-3 border-b-2 border-gray-300 cursor-pointer ${
                   activeMenu === 'game'
                     ? 'bg-purple-50 text-purple-700 font-semibold border-l-4 border-l-purple-600'
                     : 'text-gray-700 hover:bg-gray-50 border-l-4 border-l-transparent'
@@ -467,8 +490,16 @@ export default function AdminPage() {
           </div>
         </aside>
 
+        {/* Mobil Overlay */}
+        {mobileMenuOpen && (
+          <div 
+            onClick={() => setMobileMenuOpen(false)}
+            className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+          />
+        )}
+
         {/* Ana İçerik */}
-        <main className="flex-1 p-8 overflow-y-auto">
+        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
           {message.text && (
             <div className={`mb-6 p-4 rounded-lg ${
               message.type === 'success' 
@@ -481,45 +512,45 @@ export default function AdminPage() {
 
           {/* Aktif Kullanıcılar */}
           {activeMenu === 'users' && (
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">👥 Aktif Kullanıcılar</h2>
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">👥 Aktif Kullanıcılar</h2>
               
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+              <div className="overflow-x-auto -mx-4 sm:mx-0">
+                <table className="w-full text-xs sm:text-sm min-w-[800px]">
                   <thead className="bg-gray-100">
                     <tr>
-                      <th className="px-4 py-3 text-left text-gray-700 font-semibold">Kullanıcı</th>
-                      <th className="px-4 py-3 text-left text-gray-700 font-semibold">E-posta</th>
-                      <th className="px-4 py-3 text-left text-gray-700 font-semibold">Rol</th>
-                      <th className="px-4 py-3 text-center text-gray-700 font-semibold">Bonus</th>
-                      <th className="px-4 py-3 text-center text-gray-700 font-semibold">Oyunlar</th>
-                      <th className="px-4 py-3 text-center text-gray-700 font-semibold">Oluşturulma</th>
-                      <th className="px-4 py-3 text-center text-gray-700 font-semibold">Son Giriş</th>
-                      <th className="px-4 py-3 text-center text-gray-700 font-semibold">Bonus Ekle</th>
-                      <th className="px-4 py-3 text-center text-gray-700 font-semibold">Sil</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-gray-700 font-semibold">Kullanıcı</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-gray-700 font-semibold hidden sm:table-cell">E-posta</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-gray-700 font-semibold">Rol</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-center text-gray-700 font-semibold">Bonus</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-center text-gray-700 font-semibold hidden md:table-cell">Oyunlar</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-center text-gray-700 font-semibold hidden lg:table-cell">Oluşturulma</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-center text-gray-700 font-semibold hidden lg:table-cell">Son Giriş</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-center text-gray-700 font-semibold">Bonus Ekle</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-center text-gray-700 font-semibold">Sil</th>
                     </tr>
                   </thead>
                   <tbody>
                     {users.map((user) => (
                       <tr key={user.id} className="border-t border-gray-200 hover:bg-gray-50">
-                        <td className="px-4 py-3">
+                        <td className="px-2 sm:px-4 py-2 sm:py-3">
                           <div className="font-medium text-gray-800">{user.username}</div>
                         </td>
-                        <td className="px-4 py-3 text-gray-600">{user.email}</td>
-                        <td className="px-4 py-3">
+                        <td className="px-2 sm:px-4 py-2 sm:py-3 text-gray-600 hidden sm:table-cell">{user.email}</td>
+                        <td className="px-2 sm:px-4 py-2 sm:py-3">
                           <span className={`px-2 py-1 rounded text-xs font-medium ${
                             user.role === 'ADMIN' 
                               ? 'bg-yellow-100 text-yellow-800' 
                               : 'bg-blue-100 text-blue-800'
                           }`}>
-                            {user.role === 'ADMIN' ? '👑 Admin' : '👤 Öğrenci'}
+                            {user.role === 'ADMIN' ? '👑' : '👤'}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-center">
+                        <td className="px-2 sm:px-4 py-2 sm:py-3 text-center">
                           <span className="font-bold text-green-600">{user.totalPoints}</span>
                         </td>
-                        <td className="px-4 py-3 text-center text-gray-600">{user.gamesPlayed}</td>
-                        <td className="px-4 py-3 text-center text-xs text-blue-600 font-medium">
+                        <td className="px-2 sm:px-4 py-2 sm:py-3 text-center text-gray-600 hidden md:table-cell">{user.gamesPlayed}</td>
+                        <td className="px-2 sm:px-4 py-2 sm:py-3 text-center text-xs text-blue-600 font-medium hidden lg:table-cell">
                           {new Date(user.createdAt).toLocaleDateString('tr-TR')}
                           <div className="text-gray-500">
                             {new Date(user.createdAt).toLocaleTimeString('tr-TR', { 
@@ -528,31 +559,31 @@ export default function AdminPage() {
                             })}
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-center text-xs text-gray-500">
+                        <td className="px-2 sm:px-4 py-2 sm:py-3 text-center text-xs text-gray-500 hidden lg:table-cell">
                           {user.lastLoginAt 
                             ? new Date(user.lastLoginAt).toLocaleDateString('tr-TR')
                             : 'Hiç giriş yapmadı'
                           }
                         </td>
-                        <td className="px-4 py-3 text-center">
+                        <td className="px-2 sm:px-4 py-2 sm:py-3 text-center">
                           {user.role !== 'ADMIN' && (
                             <button
                               onClick={() => openBonusModal(user)}
                               disabled={loading}
-                              className="px-3 py-1 bg-green-100 text-green-700 rounded hover:bg-green-200 transition text-xs font-medium disabled:opacity-50"
+                              className="px-2 sm:px-3 py-1 bg-green-100 text-green-700 rounded hover:bg-green-200 transition text-xs font-medium disabled:opacity-50"
                             >
-                              ➕ Bonus
+                              ➕
                             </button>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-center">
+                        <td className="px-2 sm:px-4 py-2 sm:py-3 text-center">
                           {user.id !== session?.user.id ? (
                             <button
                               onClick={() => handleDeleteUser(user.id, user.username)}
                               disabled={loading}
-                              className="px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition text-xs font-medium disabled:opacity-50"
+                              className="px-2 sm:px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition text-xs font-medium disabled:opacity-50"
                             >
-                              🗑️ Sil
+                              🗑️
                             </button>
                           ) : (
                             <span className="text-xs text-gray-400 italic">-</span>
@@ -573,9 +604,9 @@ export default function AdminPage() {
 
           {/* Çöp Kutusu */}
           {activeMenu === 'trash' && (
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">🗑️ Çöp Kutusu</h2>
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-2">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-800">🗑️ Çöp Kutusu</h2>
                 <div className="text-sm text-gray-600">
                   Toplam {deletedUsers.length} silinen kullanıcı
                 </div>
@@ -661,11 +692,11 @@ export default function AdminPage() {
 
           {/* Kullanıcı Ekle */}
           {activeMenu === 'add-user' && (
-            <div className="bg-white rounded-2xl shadow-lg p-6 max-w-3xl mx-auto">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">➕ Yeni Kullanıcı Ekle</h2>
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 max-w-3xl mx-auto">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 text-center">➕ Yeni Kullanıcı Ekle</h2>
               
               <form onSubmit={handleCreateUser}>
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Kullanıcı Adı

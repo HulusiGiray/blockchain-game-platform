@@ -20,6 +20,7 @@ export default function AccountPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [passwordChangedAt, setPasswordChangedAt] = useState<string | null>(null)
   const [showSuccessPopup, setShowSuccessPopup] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     if (session) {
@@ -93,14 +94,27 @@ export default function AccountPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       
-      <div className="flex-1 flex">
+      {/* Mobil Menü Butonu */}
+      <button
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        className="md:hidden fixed bottom-4 right-4 z-50 bg-blue-600 text-white p-4 rounded-full shadow-lg"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      
+      <div className="flex-1 flex relative">
         {/* Sol Menü */}
-        <aside className="w-64 bg-white shadow-lg border-r border-gray-200">
+        <aside className={`${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:relative w-64 bg-white shadow-lg border-r border-gray-200 z-40 transition-transform duration-300 h-full`}>
           <div className="p-6">
             <h2 className="text-xl font-bold text-gray-800 mb-6 pb-4 border-b-2 border-gray-200">👤 Hesabım</h2>
             <nav className="space-y-1">
               <button
-                onClick={() => setActiveMenu('info')}
+                onClick={() => {
+                  setActiveMenu('info')
+                  setMobileMenuOpen(false)
+                }}
                 className={`w-full text-left px-4 py-3 transition-colors flex items-center gap-3 border-b-2 border-gray-300 cursor-pointer ${
                   activeMenu === 'info'
                     ? 'bg-purple-50 text-purple-700 font-semibold border-l-4 border-l-purple-600'
@@ -112,7 +126,10 @@ export default function AccountPage() {
               </button>
 
               <button
-                onClick={() => setActiveMenu('bonus')}
+                onClick={() => {
+                  setActiveMenu('bonus')
+                  setMobileMenuOpen(false)
+                }}
                 className={`w-full text-left px-4 py-3 transition-colors flex items-center gap-3 border-b-2 border-gray-300 cursor-pointer ${
                   activeMenu === 'bonus'
                     ? 'bg-green-50 text-green-700 font-semibold border-l-4 border-l-green-600'
@@ -124,7 +141,10 @@ export default function AccountPage() {
               </button>
               
               <button
-                onClick={() => setActiveMenu('password')}
+                onClick={() => {
+                  setActiveMenu('password')
+                  setMobileMenuOpen(false)
+                }}
                 className={`w-full text-left px-4 py-3 transition-colors flex items-center gap-3 border-b-2 border-gray-300 cursor-pointer ${
                   activeMenu === 'password'
                     ? 'bg-blue-50 text-blue-700 font-semibold border-l-4 border-l-blue-600'
@@ -138,8 +158,16 @@ export default function AccountPage() {
           </div>
         </aside>
 
+        {/* Mobil Overlay */}
+        {mobileMenuOpen && (
+          <div 
+            onClick={() => setMobileMenuOpen(false)}
+            className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+          />
+        )}
+
         {/* Ana İçerik */}
-        <main className="flex-1 p-8 overflow-y-auto">
+        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
           {message.text && (
             <div className={`mb-6 p-4 rounded-lg ${
               message.type === 'success' 
@@ -153,17 +181,17 @@ export default function AccountPage() {
           {/* Bilgilerim */}
           {activeMenu === 'info' && (
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">ℹ️ Bilgilerim</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8 text-center">ℹ️ Bilgilerim</h2>
 
               {/* Profil Kartı */}
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-xl p-8 text-white mb-8">
-                <div className="flex items-center gap-6">
-                  <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center text-5xl backdrop-blur-sm">
+              <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 md:p-8 text-white mb-6 sm:mb-8">
+                <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-white/20 rounded-full flex items-center justify-center text-3xl sm:text-4xl md:text-5xl backdrop-blur-sm">
                     {session?.user.role === 'ADMIN' ? '👑' : '👤'}
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-3xl font-bold mb-2">{session?.user.username}</h3>
-                    <p className="text-white/90 text-lg">{session?.user.email}</p>
+                  <div className="flex-1 text-center sm:text-left">
+                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 sm:mb-2">{session?.user.username}</h3>
+                    <p className="text-white/90 text-sm sm:text-base md:text-lg break-all">{session?.user.email}</p>
                     <div className="mt-3">
                       <span className={`px-4 py-2 rounded-full text-sm font-semibold ${
                         session?.user.role === 'ADMIN'
@@ -178,8 +206,8 @@ export default function AccountPage() {
               </div>
 
               {/* Detaylı Bilgiler */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white rounded-xl shadow-lg p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
                   <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
                     <span className="text-2xl">📧</span>
                     İletişim Bilgileri
@@ -223,23 +251,23 @@ export default function AccountPage() {
           {/* Bonuslarım */}
           {activeMenu === 'bonus' && (
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">💰 Bonuslarım</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8 text-center">💰 Bonuslarım</h2>
 
               {/* Toplam Bonus Kartı */}
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-xl p-8 text-white mb-8">
+              <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 md:p-8 text-white mb-6 sm:mb-8">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm opacity-90 mb-2">Toplam Bonus Puanım</div>
-                    <div className="text-6xl font-bold">
+                    <div className="text-xs sm:text-sm opacity-90 mb-1 sm:mb-2">Toplam Bonus Puanım</div>
+                    <div className="text-3xl sm:text-4xl md:text-6xl font-bold">
                       {balance ? balance.totalPoints : '...'}
                     </div>
                   </div>
-                  <div className="text-8xl opacity-20">💰</div>
+                  <div className="text-4xl sm:text-6xl md:text-8xl opacity-20">💰</div>
                 </div>
               </div>
 
               {/* İstatistikler */}
-              <div className="grid md:grid-cols-2 gap-4 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 sm:mb-8">
                 {/* Katıldığım Oyunlar */}
                 <div className="bg-white rounded-xl shadow-lg p-6">
                   <div className="text-center mb-4">
@@ -304,9 +332,9 @@ export default function AccountPage() {
           {/* Şifre Değiştir */}
           {activeMenu === 'password' && (
             <div className="max-w-2xl mx-auto">
-              <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">🔒 Şifre Değiştir</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8 text-center">🔒 Şifre Değiştir</h2>
 
-              <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-gray-200">
+              <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 border-2 border-gray-200">
                 <div className="mb-6">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-2xl">
