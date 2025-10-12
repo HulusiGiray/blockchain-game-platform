@@ -49,12 +49,12 @@ export default function LoginPage() {
       
       {/* Paraşüt 1 - Sol Taraf - Powered by */}
       <div 
-        className="hidden md:block absolute left-1/4 transform -translate-x-1/2 z-20 animate-parachute-drop"
+        className="absolute left-[10%] md:left-1/4 transform -translate-x-1/2 z-20 animate-parachute-drop"
       >
-        <div className="text-center">
+        <div className="text-center scale-50 md:scale-100">
           <div className="text-6xl mb-2">🪂</div>
           <div className="bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg">
-            <p className="text-gray-800 font-semibold text-sm">
+            <p className="text-gray-800 font-semibold text-sm whitespace-nowrap">
               Powered by <span className="text-blue-600">SEN0401</span> - Students
             </p>
           </div>
@@ -63,9 +63,9 @@ export default function LoginPage() {
 
       {/* Paraşüt 2 - Sağ Taraf - Bilgilendirme */}
       <div 
-        className="hidden md:block absolute right-1/4 transform translate-x-1/2 z-20 animate-parachute-drop-2"
+        className="absolute right-[10%] md:right-1/4 transform translate-x-1/2 z-20 animate-parachute-drop-2"
       >
-        <div className="text-center">
+        <div className="text-center scale-50 md:scale-100">
           <div className="text-6xl mb-2">🪂</div>
           <div className="bg-white/90 backdrop-blur-sm px-6 py-3 rounded-xl shadow-lg max-w-xs">
             <p className="text-gray-800 font-semibold text-xs leading-relaxed">
