@@ -49,7 +49,7 @@ export default function LoginPage() {
       
       {/* Paraşüt 1 - Sol Taraf - Powered by */}
       <div 
-        className="absolute left-[10%] md:left-1/4 transform -translate-x-1/2 z-20 animate-parachute-drop"
+        className="absolute left-[10%] md:left-1/4 transform -translate-x-1/2 z-50 animate-parachute-drop"
       >
         <div className="text-center scale-50 md:scale-100">
           <div className="text-6xl mb-2">🪂</div>
@@ -63,7 +63,7 @@ export default function LoginPage() {
 
       {/* Paraşüt 2 - Sağ Taraf - Bilgilendirme */}
       <div 
-        className="absolute right-[10%] md:right-1/4 transform translate-x-1/2 z-20 animate-parachute-drop-2"
+        className="absolute right-[10%] md:right-1/4 transform translate-x-1/2 z-50 animate-parachute-drop-2"
       >
         <div className="text-center scale-50 md:scale-100">
           <div className="text-6xl mb-2">🪂</div>
