@@ -4,11 +4,14 @@ import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import SendMessageModal from './SendMessageModal'
 
 export default function Header() {
   const { data: session } = useSession()
   const pathname = usePathname()
   const [balance, setBalance] = useState<number | null>(null)
+  const [showMessageModal, setShowMessageModal] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
 
   useEffect(() => {
     if (session) {
@@ -16,6 +19,21 @@ export default function Header() {
         .then(res => res.json())
         .then(data => setBalance(data.totalPoints))
         .catch(console.error)
+      
+      // Admin ise okunmamış mesaj sayısını çek
+      if (session.user.role === 'ADMIN') {
+        const loadUnreadCount = () => {
+          fetch('/api/messages/list')
+            .then(res => res.json())
+            .then(data => setUnreadCount(data.unreadCount || 0))
+            .catch(console.error)
+        }
+        
+        loadUnreadCount()
+        // Her 30 saniyede bir güncelle
+        const interval = setInterval(loadUnreadCount, 30000)
+        return () => clearInterval(interval)
+      }
     }
   }, [session])
 
@@ -46,6 +64,34 @@ export default function Header() {
               )}
             </div>
 
+          {/* Sorun Bildir Butonu (Öğrenciler için) */}
+          {session.user.role === 'STUDENT' && (
+            <button
+              onClick={() => setShowMessageModal(true)}
+              className="px-2 sm:px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 rounded-lg transition-colors font-medium text-xs sm:text-sm whitespace-nowrap flex items-center gap-1 cursor-pointer"
+            >
+              <span className="hidden sm:inline">Sorun mu yaşıyorsun?</span>
+              <span className="sm:hidden">💬</span>
+              <span>❓</span>
+            </button>
+          )}
+
+          {/* Mesajlar Butonu (Adminler için) */}
+          {session.user.role === 'ADMIN' && (
+            <Link
+              href="/messages"
+              className="relative px-2 sm:px-3 py-1.5 bg-green-500 hover:bg-green-600 rounded-lg transition-colors font-medium text-xs sm:text-sm whitespace-nowrap flex items-center gap-1"
+            >
+              <span className="hidden sm:inline">Mesajlar</span>
+              <span>✉️</span>
+              {unreadCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold animate-pulse">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </Link>
+          )}
+
           {/* Bonus Göstergesi */}
           <div className="flex items-center gap-1 bg-white/20 px-2 sm:px-3 py-1.5 rounded-lg backdrop-blur-sm">
             <span className="text-base sm:text-xl">💰</span>
@@ -67,6 +113,11 @@ export default function Header() {
             </button>
           </div>
         </div>
+        
+        {/* Mesaj Gönderme Modalı */}
+        {showMessageModal && (
+          <SendMessageModal onClose={() => setShowMessageModal(false)} />
+        )}
 
         {/* Ana Navigasyon - Her zaman görünür */}
         <nav className="flex gap-1.5 sm:gap-2 mt-3 overflow-x-auto">

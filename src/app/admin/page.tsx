@@ -26,6 +26,74 @@ type Submission = {
 
 type MenuItem = 'users' | 'add-user' | 'trash' | 'game' | 'logs'
 
+function GameParticipants({ gameInstanceId }: { gameInstanceId: string }) {
+  const [participants, setParticipants] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadParticipants = async () => {
+      try {
+        const res = await fetch(`/api/admin/submissions?gameInstanceId=${gameInstanceId}`)
+        const data = await res.json()
+        const submissions = data.submissions || []
+        
+        // Unique kullanıcıları al
+        const uniqueUsers = new Map()
+        submissions.forEach((sub: any) => {
+          if (!uniqueUsers.has(sub.userId)) {
+            uniqueUsers.set(sub.userId, {
+              username: sub.username,
+              submissionCount: 1
+            })
+          } else {
+            uniqueUsers.get(sub.userId).submissionCount++
+          }
+        })
+        
+        setParticipants(Array.from(uniqueUsers.values()))
+      } catch (error) {
+        console.error('Katılımcı yükleme hatası:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    loadParticipants()
+  }, [gameInstanceId])
+
+  if (loading) {
+    return (
+      <div className="mt-2 p-3 bg-purple-50 rounded text-center">
+        <span className="text-sm text-purple-700">Yükleniyor...</span>
+      </div>
+    )
+  }
+
+  if (participants.length === 0) {
+    return (
+      <div className="mt-2 p-3 bg-gray-50 rounded text-center">
+        <span className="text-sm text-gray-600">Henüz kimse katılmadı</span>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mt-2 p-3 bg-purple-50 rounded border border-purple-200">
+      <div className="text-xs font-semibold text-purple-900 mb-2">
+        👥 Katılımcılar ({participants.length} kişi)
+      </div>
+      <div className="space-y-1 max-h-40 overflow-y-auto">
+        {participants.map((participant, idx) => (
+          <div key={idx} className="flex items-center justify-between bg-white px-2 py-1.5 rounded text-xs">
+            <span className="font-medium text-gray-800">{participant.username}</span>
+            <span className="text-gray-500">{participant.submissionCount} işlem</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function AdminPage() {
   const { data: session } = useSession()
   const [activeMenu, setActiveMenu] = useState<MenuItem>('users')
@@ -896,23 +964,29 @@ export default function AdminPage() {
                                         <span className="text-gray-600">Hafta:</span>
                                         <span className="ml-2 font-semibold text-gray-900">{log.payload.weekNo}</span>
                                       </div>
-                                      {isExpanded && log.targetId && (
+                                      {log.targetId && (
                                         <button
                                           onClick={async () => {
-                                            try {
-                                              const res = await fetch(`/api/admin/submissions?gameInstanceId=${log.targetId}`)
-                                              const data = await res.json()
-                                              const submissions = data.submissions || []
-                                              const uniqueUsers = new Set(submissions.map((s: any) => s.userId))
-                                              alert(`🎮 Oyuna ${uniqueUsers.size} kişi katıldı\n📝 Toplam ${submissions.length} submission var`)
-                                            } catch (error) {
-                                              alert('❌ Katılımcı bilgisi yüklenemedi')
+                                            setExpandedLogId(expandedLogId === log.id ? null : log.id)
+                                            if (expandedLogId !== log.id) {
+                                              try {
+                                                const res = await fetch(`/api/admin/submissions?gameInstanceId=${log.targetId}`)
+                                                const data = await res.json()
+                                                const submissions = data.submissions || []
+                                                const usernames = [...new Set(submissions.map((s: any) => s.username))]
+                                                setExpandedLogId(log.id)
+                                              } catch (error) {
+                                                console.error('Katılımcı yükleme hatası:', error)
+                                              }
                                             }
                                           }}
                                           className="w-full mt-2 px-3 py-2 bg-purple-200 text-purple-900 rounded-lg text-sm font-semibold hover:bg-purple-300 transition flex items-center justify-center gap-2"
                                         >
-                                          👁️ Katılımcıları Gör
+                                          👁️ {isExpanded ? 'Katılımcıları Gizle' : 'Katılımcıları Göster'}
                                         </button>
+                                      )}
+                                      {isExpanded && log.targetId && (
+                                        <GameParticipants gameInstanceId={log.targetId} />
                                       )}
                                     </>
                                   )}

@@ -21,6 +21,8 @@ model User {
   walletTxs          WalletTransaction[]
   auditLogs          AuditLog[] @relation("UserAuditActor")
   waitingRooms       GameWaitingRoom[]
+  sentMessages       Message[] @relation("MessageSender")
+  receivedMessages   Message[] @relation("MessageReceiver")
 }
 
 model Game {
@@ -131,4 +133,15 @@ enum GameStatus {
   ACTIVE
   ENDED
   ARCHIVED
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  sender     User     @relation("MessageSender", fields: [senderId], references: [id])
+  senderId   String
+  receiver   User     @relation("MessageReceiver", fields: [receiverId], references: [id])
+  receiverId String
+  message    String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
 }
