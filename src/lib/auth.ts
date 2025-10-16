@@ -23,8 +23,16 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        // Otomatik olarak domain ekle
-        const email = `${credentials.studentNumber}@stu.iku.edu.tr`
+        // E-posta veya öğrenci numarası kontrolü
+        let email: string
+        if (credentials.studentNumber.includes('@')) {
+          // Direkt e-posta girilmiş (adminler için)
+          email = credentials.studentNumber
+        } else {
+          // Öğrenci numarası girilmiş, domain ekle
+          email = `${credentials.studentNumber}@stu.iku.edu.tr`
+        }
+        
         console.log('🔍 Looking for user with email:', email)
 
         const user = await prisma.user.findUnique({

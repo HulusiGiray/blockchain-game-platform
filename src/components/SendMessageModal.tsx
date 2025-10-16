@@ -72,7 +72,7 @@ export default function SendMessageModal({ onClose }: { onClose: () => void }) {
     }
   }
 
-  const wordCount = message.trim().split(/\s+/).filter(w => w).length
+  const wordCount = message.trim() === '' ? 0 : message.trim().split(/\s+/).filter(w => w.length > 0).length
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
@@ -130,13 +130,13 @@ export default function SendMessageModal({ onClose }: { onClose: () => void }) {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none text-gray-800 resize-none"
-                  placeholder="Sorununu veya sorunlarını buraya yaz..."
+                  placeholder="Sorununu detaylı bir şekilde açıkla. Örnek: Oyuna katılamıyorum, sürekli hata veriyor..."
                   rows={6}
                   required
-                  maxLength={500}
+                  maxLength={1000}
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Maximum 100 kelime. Açık ve net bir şekilde açıkla.
+                  Maximum 100 kelime (yaklaşık 500 karakter). Açık ve net bir şekilde açıkla.
                 </p>
               </div>
 

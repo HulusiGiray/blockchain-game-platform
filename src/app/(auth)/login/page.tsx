@@ -16,9 +16,11 @@ export default function LoginPage() {
     e.preventDefault()
     setError('')
 
-    // Öğrenci numarası kontrolü
-    if (!/^[0-9]{10}$/.test(studentNumber)) {
-      setError('Öğrenci numarası 10 haneli olmalıdır')
+    // E-posta veya öğrenci numarası kontrolü
+    const isEmail = studentNumber.includes('@')
+    
+    if (!isEmail && !/^[0-9]{10}$/.test(studentNumber)) {
+      setError('Öğrenci numarası 10 haneli olmalıdır veya geçerli bir e-posta girin')
       return
     }
 
@@ -32,7 +34,7 @@ export default function LoginPage() {
       })
 
       if (result?.error) {
-        setError('Öğrenci numarası veya şifre hatalı')
+        setError('E-posta/Öğrenci numarası veya şifre hatalı')
       } else if (result?.ok) {
         router.push('/game')
         router.refresh()
@@ -165,24 +167,34 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Öğrenci Numarası
+              Öğrenci Numarası / E-posta
             </label>
             <div className="relative">
               <input
                 type="text"
                 value={studentNumber}
-                onChange={(e) => setStudentNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                onChange={(e) => {
+                  const value = e.target.value
+                  // @ varsa direkt kabul et (admin), yoksa sadece rakam (öğrenci)
+                  if (value.includes('@')) {
+                    setStudentNumber(value)
+                  } else {
+                    setStudentNumber(value.replace(/\D/g, '').slice(0, 10))
+                  }
+                }}
                 className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-32 sm:pr-48 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-800 text-sm sm:text-base"
-                placeholder="2500009977"
-                pattern="[0-9]{10}"
-                maxLength={10}
+                placeholder="2500009977 veya admin@email.com"
                 required
               />
-              <div className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs sm:text-sm pointer-events-none">
-                @stu.iku.edu.tr
-              </div>
+              {!studentNumber.includes('@') && (
+                <div className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs sm:text-sm pointer-events-none">
+                  @stu.iku.edu.tr
+                </div>
+              )}
             </div>
-            <p className="text-xs text-gray-500 mt-1">10 haneli öğrenci numaranızı girin</p>
+            <p className="text-xs text-gray-500 mt-1">
+              Öğrenci: 10 haneli numara | Admin: E-posta adresi
+            </p>
           </div>
 
           <div>
