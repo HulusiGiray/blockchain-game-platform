@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Blockchain Oyunları - Eğitsel Oyun Platformu",
+  title: "🎮 Blockchain Takip Paneli",
   description: "Blockchain dersi için eğitsel oyun platformu",
 };
 
