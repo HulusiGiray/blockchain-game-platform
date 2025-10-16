@@ -26,11 +26,9 @@ export default function Header() {
       <div className="container mx-auto px-2 sm:px-4 py-3">
         <div className="flex items-center justify-between gap-2 flex-wrap">
           {/* Logo / Başlık */}
-          <div className="flex items-center gap-2">
-            <span className="text-xl sm:text-2xl">🎓</span>
-            <div className="text-left">
-              <div className="font-bold text-sm sm:text-base">SEN0401 - Blockchain</div>
-              <div className="text-xs opacity-80 hidden sm:block">Eğitsel Oyun Platformu</div>
+          <div className="flex items-center">
+            <div className="font-bold text-sm sm:text-base md:text-lg animate-pulse-slow bg-gradient-to-r from-white via-yellow-200 to-white bg-clip-text text-transparent">
+              SEN0401 - Blockchain
             </div>
           </div>
 

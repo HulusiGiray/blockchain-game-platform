@@ -802,75 +802,139 @@ export default function AdminPage() {
                             <div className="flex items-start gap-3 flex-1 min-w-0">
                               <div className="text-2xl flex-shrink-0">{actionEmoji}</div>
                               <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <span className="font-bold text-gray-800">{log.actor.username}</span>
-                                  <span
-                                    className={`text-sm px-2 py-0.5 rounded ${
-                                      actionColor === 'green'
-                                        ? 'bg-green-200 text-green-900'
-                                        : actionColor === 'red'
-                                        ? 'bg-red-200 text-red-900'
-                                        : actionColor === 'yellow'
-                                        ? 'bg-yellow-200 text-yellow-900'
-                                        : actionColor === 'purple'
-                                        ? 'bg-purple-200 text-purple-900'
-                                        : 'bg-blue-200 text-blue-900'
-                                    }`}
-                                  >
-                                    {actionText}
-                                  </span>
+                                {/* Başlık - Admin + İşlem */}
+                                <div className="mb-3 pb-2 border-b border-gray-200">
+                                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                                    <span className="font-bold text-gray-900 text-base">{log.actor.username}</span>
+                                    <span className={`text-xs px-2 py-0.5 rounded ${
+                                      log.actor.role === 'ADMIN' ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800'
+                                    }`}>
+                                      {log.actor.role === 'ADMIN' ? '👑 Admin' : '👤 Öğrenci'}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <span
+                                      className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                                        actionColor === 'green'
+                                          ? 'bg-green-200 text-green-900'
+                                          : actionColor === 'red'
+                                          ? 'bg-red-200 text-red-900'
+                                          : actionColor === 'yellow'
+                                          ? 'bg-yellow-200 text-yellow-900'
+                                          : actionColor === 'purple'
+                                          ? 'bg-purple-200 text-purple-900'
+                                          : 'bg-blue-200 text-blue-900'
+                                      }`}
+                                    >
+                                      {actionText}
+                                    </span>
+                                  </div>
                                 </div>
 
-                                {/* Detay bilgisi */}
-                                {log.payload && (
-                                  <div className="mt-2 text-sm text-gray-700">
-                                    {log.action === 'CREATE_USER' && (
-                                      <>
-                                        <div><strong>Kullanıcı:</strong> {log.payload.username}</div>
-                                        <div><strong>E-posta:</strong> {log.payload.email}</div>
-                                        <div><strong>Rol:</strong> {log.payload.role === 'ADMIN' ? '👑 Admin' : '👤 Öğrenci'}</div>
-                                      </>
-                                    )}
-                                    {log.action === 'DELETE_USER' && (
-                                      <>
-                                        <div><strong>Silinen Kullanıcı:</strong> {log.payload.username}</div>
-                                        <div><strong>Rol:</strong> {log.payload.role === 'ADMIN' ? '👑 Admin' : '👤 Öğrenci'}</div>
-                                      </>
-                                    )}
-                                    {log.action === 'ADD_MANUAL_BONUS' && (
-                                      <>
-                                        <div><strong>Kullanıcı:</strong> {log.payload.username}</div>
-                                        <div><strong>Puan:</strong> +{log.payload.points}</div>
-                                        {log.payload.reason && <div><strong>Sebep:</strong> {log.payload.reason}</div>}
-                                      </>
-                                    )}
-                                    {log.action === 'START_GAME' && (
-                                      <>
-                                        <div><strong>Oyun:</strong> {log.payload.gameCode}</div>
-                                        <div><strong>Hafta:</strong> {log.payload.weekNo}</div>
-                                        {isExpanded && log.targetId && (
-                                          <button
-                                            onClick={async () => {
-                                              try {
-                                                const res = await fetch(`/api/admin/submissions?gameInstanceId=${log.targetId}`)
-                                                const data = await res.json()
-                                                alert(`Oyuna ${data.submissions?.length || 0} kişi katıldı`)
-                                              } catch (error) {
-                                                alert('Katılımcı bilgisi yüklenemedi')
-                                              }
-                                            }}
-                                            className="mt-2 px-3 py-1 bg-purple-200 text-purple-900 rounded text-xs hover:bg-purple-300 transition"
-                                          >
-                                            👁️ Katılımcıları Gör
-                                          </button>
-                                        )}
-                                      </>
-                                    )}
-                                  </div>
-                                )}
+                                {/* Detay Bilgileri */}
+                                <div className="space-y-2 text-sm">
+                                  {log.action === 'CREATE_USER' && log.payload && (
+                                    <>
+                                      <div className="bg-white/50 p-2 rounded">
+                                        <span className="text-gray-600">Oluşturulan Kullanıcı:</span>
+                                        <span className="ml-2 font-semibold text-gray-900">{log.payload.username}</span>
+                                      </div>
+                                      <div className="bg-white/50 p-2 rounded">
+                                        <span className="text-gray-600">E-posta:</span>
+                                        <span className="ml-2 font-semibold text-gray-900">{log.payload.email}</span>
+                                      </div>
+                                      <div className="bg-white/50 p-2 rounded">
+                                        <span className="text-gray-600">Rol:</span>
+                                        <span className="ml-2 font-semibold text-gray-900">
+                                          {log.payload.role === 'ADMIN' ? '👑 Admin' : '👤 Öğrenci'}
+                                        </span>
+                                      </div>
+                                    </>
+                                  )}
+                                  
+                                  {log.action === 'DELETE_USER' && log.payload && (
+                                    <>
+                                      <div className="bg-white/50 p-2 rounded">
+                                        <span className="text-gray-600">Silinen Kullanıcı:</span>
+                                        <span className="ml-2 font-semibold text-gray-900">{log.payload.username}</span>
+                                      </div>
+                                      <div className="bg-white/50 p-2 rounded">
+                                        <span className="text-gray-600">Rol:</span>
+                                        <span className="ml-2 font-semibold text-gray-900">
+                                          {log.payload.role === 'ADMIN' ? '👑 Admin' : '👤 Öğrenci'}
+                                        </span>
+                                      </div>
+                                    </>
+                                  )}
+                                  
+                                  {log.action === 'ADD_MANUAL_BONUS' && log.payload && (
+                                    <>
+                                      <div className="bg-white/50 p-2 rounded">
+                                        <span className="text-gray-600">Bonus Alan Kullanıcı:</span>
+                                        <span className="ml-2 font-semibold text-gray-900">{log.payload.username}</span>
+                                      </div>
+                                      <div className="bg-white/50 p-2 rounded">
+                                        <span className="text-gray-600">Eklenen Puan:</span>
+                                        <span className="ml-2 font-bold text-green-600 text-base">+{log.payload.points}</span>
+                                      </div>
+                                      {log.payload.reason && (
+                                        <div className="bg-white/50 p-2 rounded">
+                                          <span className="text-gray-600">Açıklama:</span>
+                                          <span className="ml-2 font-semibold text-gray-900">{log.payload.reason}</span>
+                                        </div>
+                                      )}
+                                    </>
+                                  )}
+                                  
+                                  {log.action === 'START_GAME' && log.payload && (
+                                    <>
+                                      <div className="bg-white/50 p-2 rounded">
+                                        <span className="text-gray-600">Oyun Kodu:</span>
+                                        <span className="ml-2 font-semibold text-gray-900">{log.payload.gameCode}</span>
+                                      </div>
+                                      <div className="bg-white/50 p-2 rounded">
+                                        <span className="text-gray-600">Hafta:</span>
+                                        <span className="ml-2 font-semibold text-gray-900">{log.payload.weekNo}</span>
+                                      </div>
+                                      {isExpanded && log.targetId && (
+                                        <button
+                                          onClick={async () => {
+                                            try {
+                                              const res = await fetch(`/api/admin/submissions?gameInstanceId=${log.targetId}`)
+                                              const data = await res.json()
+                                              const submissions = data.submissions || []
+                                              const uniqueUsers = new Set(submissions.map((s: any) => s.userId))
+                                              alert(`🎮 Oyuna ${uniqueUsers.size} kişi katıldı\n📝 Toplam ${submissions.length} submission var`)
+                                            } catch (error) {
+                                              alert('❌ Katılımcı bilgisi yüklenemedi')
+                                            }
+                                          }}
+                                          className="w-full mt-2 px-3 py-2 bg-purple-200 text-purple-900 rounded-lg text-sm font-semibold hover:bg-purple-300 transition flex items-center justify-center gap-2"
+                                        >
+                                          👁️ Katılımcıları Gör
+                                        </button>
+                                      )}
+                                    </>
+                                  )}
+                                </div>
 
-                                <div className="mt-2 text-xs text-gray-500">
-                                  {new Date(log.createdAt).toLocaleDateString('tr-TR')} - {new Date(log.createdAt).toLocaleTimeString('tr-TR')}
+                                {/* Tarih ve Saat */}
+                                <div className="mt-3 pt-3 border-t border-gray-200">
+                                  <div className="flex items-center gap-2 text-xs text-gray-600">
+                                    <span>📅</span>
+                                    <span className="font-medium">{new Date(log.createdAt).toLocaleDateString('tr-TR', { 
+                                      day: '2-digit', 
+                                      month: 'long', 
+                                      year: 'numeric' 
+                                    })}</span>
+                                    <span className="text-gray-400">•</span>
+                                    <span>🕐</span>
+                                    <span className="font-medium">{new Date(log.createdAt).toLocaleTimeString('tr-TR', {
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                      second: '2-digit'
+                                    })}</span>
+                                  </div>
                                 </div>
                               </div>
                             </div>

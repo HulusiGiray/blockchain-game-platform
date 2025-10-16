@@ -101,24 +101,24 @@ export default function GamePage() {
         )}
 
         {gameState.status === 'lobby' && gameState.lobbyData && (
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+          <div className="max-w-2xl mx-auto px-2 sm:px-0">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 md:p-8">
               {gameState.lobbyData.isUserInWaiting ? (
                 <>
                   {/* Kullanıcı Lobide */}
-                  <div className="text-center mb-6">
-                    <div className="text-6xl mb-4">✅</div>
-                    <h2 className="text-3xl font-bold text-gray-800 mb-2">Hazırsınız!</h2>
-                    <p className="text-gray-600">
+                  <div className="text-center mb-4 sm:mb-6">
+                    <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">✅</div>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">Hazırsınız!</h2>
+                    <p className="text-sm sm:text-base text-gray-600">
                       {gameState.lobbyData.gameTitle} - Hafta {gameState.lobbyData.weekNo}
                     </p>
-                    <p className="text-sm text-gray-500 mt-2">
+                    <p className="text-xs sm:text-sm text-gray-500 mt-2">
                       Admin oyunu başlattığında otomatik olarak yönlendirileceksiniz
                     </p>
                   </div>
 
                   {/* Lobideki Diğer Kullanıcılar */}
-                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border-2 border-blue-200">
+                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border-2 border-blue-200">
                     <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
                       <span className="text-2xl">👥</span>
                       Lobide Bekleyenler ({gameState.lobbyData.waiting.length} kişi)
@@ -164,22 +164,22 @@ export default function GamePage() {
               ) : (
                 <>
                   {/* Kullanıcı Henüz Katılmadı */}
-                  <div className="text-center mb-6">
-                    <div className="text-6xl mb-4">🎮</div>
-                    <h2 className="text-3xl font-bold text-gray-800 mb-2">Oyun Hazırlanıyor!</h2>
-                    <p className="text-gray-600 mb-2">
+                  <div className="text-center mb-4 sm:mb-6">
+                    <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">🎮</div>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">Oyun Hazırlanıyor!</h2>
+                    <p className="text-sm sm:text-base text-gray-600 mb-2">
                       {gameState.lobbyData.gameTitle} - Hafta {gameState.lobbyData.weekNo}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-xs sm:text-sm text-gray-500">
                       Admin henüz oyunu başlatmadı. Lobiye katılarak hazır olun!
                     </p>
                   </div>
 
                   <button
                     onClick={joinWaiting}
-                    className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 rounded-xl font-bold text-lg hover:from-green-700 hover:to-emerald-700 transition shadow-lg mb-6"
+                    className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold text-base sm:text-lg hover:from-green-700 hover:to-emerald-700 transition shadow-lg mb-4 sm:mb-6"
                   >
-                    🎮 Hazıra Geç
+                    🎮 Lobiye Katıl
                   </button>
 
                   {gameState.lobbyData.waiting.length > 0 && (
@@ -208,32 +208,32 @@ export default function GamePage() {
         )}
 
         {gameState.status === 'waiting' && (
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+          <div className="max-w-2xl mx-auto px-2 sm:px-0">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-6 sm:p-8 md:p-12 text-center">
               {session?.user.role === 'ADMIN' ? (
                 <>
-                  <div className="text-6xl mb-6">⚡</div>
-                  <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                  <div className="text-4xl sm:text-5xl md:text-6xl mb-4 sm:mb-6">⚡</div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3 sm:mb-4">
                     Henüz Oyun Yok
                   </h2>
-                  <p className="text-gray-600 text-lg mb-6">
+                  <p className="text-sm sm:text-base md:text-lg text-gray-600 mb-4 sm:mb-6">
                     Yeni bir oyun başlatmak için Admin Panel'i kullanın
                   </p>
                   <a
                     href="/admin"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-xl font-bold hover:from-yellow-600 hover:to-orange-600 transition shadow-lg"
+                    className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg sm:rounded-xl font-bold text-sm sm:text-base hover:from-yellow-600 hover:to-orange-600 transition shadow-lg"
                   >
-                    <span className="text-2xl">⚡</span>
+                    <span className="text-xl sm:text-2xl">⚡</span>
                     <span>Admin Panel'e Git</span>
                   </a>
                 </>
               ) : (
                 <>
-                  <div className="text-6xl mb-6">⏳</div>
-                  <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                  <div className="text-4xl sm:text-5xl md:text-6xl mb-4 sm:mb-6">⏳</div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3 sm:mb-4">
                     Admin Bekleniyor
                   </h2>
-                  <p className="text-gray-600 text-lg">
+                  <p className="text-sm sm:text-base md:text-lg text-gray-600">
                     {gameState.message || "Admin henüz oyunu başlatmadı. Lütfen bekleyin..."}
                   </p>
                   <div className="mt-8 flex justify-center">
@@ -250,8 +250,8 @@ export default function GamePage() {
         )}
 
         {gameState.status === 'active' && gameState.game && (
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
+          <div className="max-w-4xl mx-auto px-2 sm:px-0">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 mb-4 sm:mb-6">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-3xl font-bold text-gray-800">{gameState.game.title}</h2>
