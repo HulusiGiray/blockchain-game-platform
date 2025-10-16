@@ -11,17 +11,24 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [loginType, setLoginType] = useState<'STUDENT' | 'ADMIN'>('STUDENT')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
-    // E-posta veya öğrenci numarası kontrolü
-    const isEmail = studentNumber.includes('@')
-    
-    if (!isEmail && !/^[0-9]{10}$/.test(studentNumber)) {
-      setError('Öğrenci numarası 10 haneli olmalıdır veya geçerli bir e-posta girin')
-      return
+    // Giriş tipi kontrolü
+    if (loginType === 'STUDENT') {
+      if (!/^[0-9]{10}$/.test(studentNumber)) {
+        setError('Öğrenci numarası 10 haneli olmalıdır')
+        return
+      }
+    } else {
+      // Admin için e-posta kontrolü
+      if (!studentNumber.includes('@')) {
+        setError('Geçerli bir e-posta adresi girin')
+        return
+      }
     }
 
     setLoading(true)
@@ -165,9 +172,28 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Giriş Tipi Seçimi */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Öğrenci Numarası / E-posta
+              Giriş Tipi
+            </label>
+            <select
+              value={loginType}
+              onChange={(e) => {
+                setLoginType(e.target.value as 'STUDENT' | 'ADMIN')
+                setStudentNumber('') // Formu temizle
+              }}
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-800 text-sm sm:text-base"
+            >
+              <option value="STUDENT">👤 Öğrenci</option>
+              <option value="ADMIN">👑 Admin</option>
+            </select>
+          </div>
+
+          {/* Kullanıcı Adı/E-posta */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {loginType === 'STUDENT' ? 'Öğrenci Numarası' : 'E-posta Adresi'}
             </label>
             <div className="relative">
               <input
@@ -175,25 +201,28 @@ export default function LoginPage() {
                 value={studentNumber}
                 onChange={(e) => {
                   const value = e.target.value
-                  // @ varsa direkt kabul et (admin), yoksa sadece rakam (öğrenci)
-                  if (value.includes('@')) {
-                    setStudentNumber(value)
-                  } else {
+                  if (loginType === 'STUDENT') {
+                    // Sadece rakam kabul et
                     setStudentNumber(value.replace(/\D/g, '').slice(0, 10))
+                  } else {
+                    // Her şeyi kabul et
+                    setStudentNumber(value)
                   }
                 }}
                 className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-32 sm:pr-48 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-800 text-sm sm:text-base"
-                placeholder="2500009977 veya admin@email.com"
+                placeholder={loginType === 'STUDENT' ? '2500009977' : 'admin@email.com'}
                 required
               />
-              {!studentNumber.includes('@') && (
+              {loginType === 'STUDENT' && (
                 <div className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs sm:text-sm pointer-events-none">
                   @stu.iku.edu.tr
                 </div>
               )}
             </div>
             <p className="text-xs text-gray-500 mt-1">
-              Öğrenci: 10 haneli numara | Admin: E-posta adresi
+              {loginType === 'STUDENT' 
+                ? '10 haneli öğrenci numaranızı girin' 
+                : 'Tam e-posta adresinizi girin (örn: y.altunel@iku.edu.tr)'}
             </p>
           </div>
 
