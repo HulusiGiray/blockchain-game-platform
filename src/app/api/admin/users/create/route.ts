@@ -14,16 +14,29 @@ export async function POST(req: NextRequest) {
 
     const { username, email, password, role } = await req.json()
 
-    if (!username || !email || !password || !role) {
-      return NextResponse.json({ error: 'Tüm alanlar zorunludur' }, { status: 400 })
+    if (!username || !password || !role) {
+      return NextResponse.json({ error: 'Kullanıcı adı, şifre ve rol zorunludur' }, { status: 400 })
     }
 
-    // E-posta formatı kontrolü (okul maili)
-    const emailRegex = /^[0-9]{10}@stu\.iku\.edu\.tr$/
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ 
-        error: 'E-posta formatı geçersiz. Format: 2200004567@stu.iku.edu.tr' 
-      }, { status: 400 })
+    // E-posta kontrolü
+    let finalEmail = email
+
+    if (role === 'STUDENT') {
+      // Öğrenci için e-posta zorunlu ve format kontrolü
+      if (!email) {
+        return NextResponse.json({ error: 'Öğrenci için e-posta zorunludur' }, { status: 400 })
+      }
+      const emailRegex = /^[0-9]{10}@stu\.iku\.edu\.tr$/
+      if (!emailRegex.test(email)) {
+        return NextResponse.json({ 
+          error: 'E-posta formatı geçersiz. Format: 2200004567@stu.iku.edu.tr' 
+        }, { status: 400 })
+      }
+    } else if (role === 'ADMIN') {
+      // Admin için e-posta opsiyonel, yoksa username@admin.local yap
+      if (!email || email.trim() === '') {
+        finalEmail = `${username}@admin.local`
+      }
     }
 
     if (password.length < 6) {
@@ -41,7 +54,7 @@ export async function POST(req: NextRequest) {
 
     // Email kontrolü
     const existingEmail = await prisma.user.findUnique({
-      where: { email }
+      where: { email: finalEmail }
     })
 
     if (existingEmail) {
@@ -53,7 +66,7 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.create({
       data: {
         username,
-        email,
+        email: finalEmail,
         passwordHash: hashedPassword,
         role: role as 'ADMIN' | 'STUDENT',
       }
@@ -66,7 +79,7 @@ export async function POST(req: NextRequest) {
         action: 'CREATE_USER',
         targetType: 'User',
         targetId: user.id,
-        payloadJson: JSON.stringify({ username, email, role }),
+        payloadJson: JSON.stringify({ username, email: finalEmail, role }),
       }
     })
 

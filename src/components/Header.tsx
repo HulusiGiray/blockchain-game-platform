@@ -24,19 +24,29 @@ export default function Header() {
   return (
     <header className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
       <div className="container mx-auto px-2 sm:px-4 py-3">
-        <div className="flex items-center justify-end gap-2 flex-wrap">
-          {/* Kullanıcı Bilgisi - sadece geniş ekranlarda */}
-          <div className="text-right hidden xl:block">
-            <div className="font-semibold text-sm">{session.user.username}</div>
-            <div className="text-xs opacity-80">
-              {session.user.role === 'ADMIN' ? '👑 Admin' : '👤 Öğrenci'}
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          {/* Logo / Başlık */}
+          <div className="flex items-center gap-2">
+            <span className="text-xl sm:text-2xl">🎓</span>
+            <div className="text-left">
+              <div className="font-bold text-sm sm:text-base">SEN0401 - Blockchain</div>
+              <div className="text-xs opacity-80 hidden sm:block">Eğitsel Oyun Platformu</div>
             </div>
-            {session.user.role === 'STUDENT' && (
-              <div className="text-xs opacity-70">
-                {session.user.email?.split('@')[0]}
-              </div>
-            )}
           </div>
+
+          <div className="flex items-center gap-2">
+            {/* Kullanıcı Bilgisi - sadece geniş ekranlarda */}
+            <div className="text-right hidden xl:block">
+              <div className="font-semibold text-sm">{session.user.username}</div>
+              <div className="text-xs opacity-80">
+                {session.user.role === 'ADMIN' ? '👑 Admin' : '👤 Öğrenci'}
+              </div>
+              {session.user.role === 'STUDENT' && (
+                <div className="text-xs opacity-70">
+                  {session.user.email?.split('@')[0]}
+                </div>
+              )}
+            </div>
 
           {/* Bonus Göstergesi */}
           <div className="flex items-center gap-1 bg-white/20 px-2 sm:px-3 py-1.5 rounded-lg backdrop-blur-sm">
@@ -49,14 +59,15 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Çıkış Butonu */}
-          <button
-            onClick={() => signOut({ callbackUrl: '/login' })}
-            className="px-2 sm:px-3 py-1.5 bg-red-500 hover:bg-red-600 rounded-lg transition-colors font-medium text-xs sm:text-sm whitespace-nowrap flex items-center gap-1 cursor-pointer"
-          >
-            <span>Çıkış Yap</span>
-            <span>🚪</span>
-          </button>
+            {/* Çıkış Butonu */}
+            <button
+              onClick={() => signOut({ callbackUrl: '/login' })}
+              className="px-2 sm:px-3 py-1.5 bg-red-500 hover:bg-red-600 rounded-lg transition-colors font-medium text-xs sm:text-sm whitespace-nowrap flex items-center gap-1 cursor-pointer"
+            >
+              <span>Çıkış Yap</span>
+              <span>🚪</span>
+            </button>
+          </div>
         </div>
 
         {/* Ana Navigasyon - Her zaman görünür */}

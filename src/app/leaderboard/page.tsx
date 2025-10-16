@@ -91,7 +91,11 @@ export default function LeaderboardPage() {
                   <div className="flex flex-col items-center flex-1 max-w-[140px] sm:max-w-[180px]">
                     <div className="bg-gradient-to-br from-gray-300 to-gray-500 rounded-xl sm:rounded-2xl shadow-xl p-3 sm:p-6 w-full text-center mb-2 sm:mb-4">
                       <div className="text-3xl sm:text-5xl mb-2 sm:mb-3">🥈</div>
-                      <div className="text-white font-bold text-sm sm:text-xl mb-1 truncate">{leaderboard[1].username}</div>
+                      <div className="text-white font-bold text-xs sm:text-base mb-1 leading-tight break-words px-1">
+                        {leaderboard[1].username.split(' ').map((word, i) => (
+                          <div key={i}>{word}</div>
+                        ))}
+                      </div>
                       <div className="text-white text-xl sm:text-3xl font-bold">{leaderboard[1].totalPoints}</div>
                       <div className="text-white/80 text-xs sm:text-sm">puan</div>
                     </div>
@@ -109,7 +113,11 @@ export default function LeaderboardPage() {
                         </div>
                       </div>
                       <div className="text-4xl sm:text-6xl mb-2 sm:mb-3 mt-2 sm:mt-4">🥇</div>
-                      <div className="text-white font-bold text-base sm:text-2xl mb-1 sm:mb-2 truncate">{leaderboard[0].username}</div>
+                      <div className="text-white font-bold text-sm sm:text-lg mb-1 sm:mb-2 leading-tight break-words px-1">
+                        {leaderboard[0].username.split(' ').map((word, i) => (
+                          <div key={i}>{word}</div>
+                        ))}
+                      </div>
                       <div className="text-white text-2xl sm:text-4xl font-bold">{leaderboard[0].totalPoints}</div>
                       <div className="text-white/90 text-xs sm:text-sm">puan</div>
                     </div>
@@ -122,7 +130,11 @@ export default function LeaderboardPage() {
                   <div className="flex flex-col items-center flex-1 max-w-[140px] sm:max-w-[180px]">
                     <div className="bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl sm:rounded-2xl shadow-xl p-3 sm:p-6 w-full text-center mb-2 sm:mb-4">
                       <div className="text-3xl sm:text-5xl mb-2 sm:mb-3">🥉</div>
-                      <div className="text-white font-bold text-sm sm:text-xl mb-1 truncate">{leaderboard[2].username}</div>
+                      <div className="text-white font-bold text-xs sm:text-base mb-1 leading-tight break-words px-1">
+                        {leaderboard[2].username.split(' ').map((word, i) => (
+                          <div key={i}>{word}</div>
+                        ))}
+                      </div>
                       <div className="text-white text-xl sm:text-3xl font-bold">{leaderboard[2].totalPoints}</div>
                       <div className="text-white/80 text-xs sm:text-sm">puan</div>
                     </div>
@@ -213,7 +225,7 @@ export default function LeaderboardPage() {
 
 
               {/* İstatistikler */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-6 sm:mt-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-6 sm:mt-8">
                 <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 text-center">
                   <div className="text-2xl sm:text-3xl mb-2">👥</div>
                   <div className="text-xl sm:text-2xl font-bold text-gray-800">{leaderboard.length}</div>
@@ -225,15 +237,6 @@ export default function LeaderboardPage() {
                     {Math.max(...leaderboard.map(u => u.totalPoints))}
                   </div>
                   <div className="text-xs sm:text-sm text-gray-600">En Yüksek Puan</div>
-                </div>
-                <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 text-center">
-                  <div className="text-2xl sm:text-3xl mb-2">📈</div>
-                  <div className="text-xl sm:text-2xl font-bold text-gray-800">
-                    {Math.round(
-                      leaderboard.reduce((sum, u) => sum + u.totalPoints, 0) / leaderboard.length
-                    )}
-                  </div>
-                  <div className="text-xs sm:text-sm text-gray-600">Ortalama Puan</div>
                 </div>
               </div>
             </>

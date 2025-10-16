@@ -24,7 +24,7 @@ type Submission = {
   isValid: boolean
 }
 
-type MenuItem = 'users' | 'add-user' | 'trash' | 'game'
+type MenuItem = 'users' | 'add-user' | 'trash' | 'game' | 'logs'
 
 export default function AdminPage() {
   const { data: session } = useSession()
@@ -54,6 +54,8 @@ export default function AdminPage() {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [scheduledGame, setScheduledGame] = useState<any>(null)
   const [waitingUsers, setWaitingUsers] = useState<any[]>([])
+  const [logs, setLogs] = useState<any[]>([])
+  const [expandedLogId, setExpandedLogId] = useState<string | null>(null)
 
   useEffect(() => {
     if (session?.user.role === 'ADMIN') {
@@ -61,6 +63,7 @@ export default function AdminPage() {
       loadUsers()
       loadDeletedUsers()
       loadScheduledGame()
+      loadLogs()
     }
   }, [session])
 
@@ -135,18 +138,30 @@ export default function AdminPage() {
     }
   }
 
+  const loadLogs = async () => {
+    try {
+      const res = await fetch('/api/admin/logs')
+      const data = await res.json()
+      setLogs(data.logs || [])
+    } catch (error) {
+      console.error('Log yükleme hatası:', error)
+    }
+  }
+
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault()
     setMessage({ type: '', text: '' })
 
-    // E-posta formatı kontrolü
-    const emailRegex = /^[0-9]{10}@stu\.iku\.edu\.tr$/
-    if (!emailRegex.test(newUser.email)) {
-      setMessage({ 
-        type: 'error', 
-        text: 'E-posta formatı geçersiz! Örnek: 2200004567@stu.iku.edu.tr' 
-      })
-      return
+    // Öğrenci için e-posta formatı kontrolü
+    if (newUser.role === 'STUDENT') {
+      const emailRegex = /^[0-9]{10}@stu\.iku\.edu\.tr$/
+      if (!emailRegex.test(newUser.email)) {
+        setMessage({ 
+          type: 'error', 
+          text: 'E-posta formatı geçersiz! Örnek: 2200004567@stu.iku.edu.tr' 
+        })
+        return
+      }
     }
 
     setLoading(true)
@@ -471,6 +486,26 @@ export default function AdminPage() {
                   )}
                 </div>
               </button>
+
+              <button
+                onClick={() => {
+                  setActiveMenu('logs')
+                  setMobileMenuOpen(false)
+                }}
+                className={`w-full text-left px-4 py-3 transition-colors flex items-center gap-3 border-b-2 border-gray-300 cursor-pointer ${
+                  activeMenu === 'logs'
+                    ? 'bg-purple-50 text-purple-700 font-semibold border-l-4 border-l-purple-600'
+                    : 'text-gray-700 hover:bg-gray-50 border-l-4 border-l-transparent'
+                }`}
+              >
+                <span className="text-xl">📋</span>
+                <div>
+                  <div>Loglar</div>
+                  {logs.length > 0 && (
+                    <div className="text-xs opacity-75">{logs.length} kayıt</div>
+                  )}
+                </div>
+              </button>
               
               <button
                 onClick={() => {
@@ -690,6 +725,175 @@ export default function AdminPage() {
             </div>
           )}
 
+          {/* Loglar */}
+          {activeMenu === 'logs' && (
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-2">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-800">📋 Sistem Logları</h2>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={loadLogs}
+                    className="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-lg text-sm hover:bg-purple-200 transition"
+                  >
+                    🔄 Yenile
+                  </button>
+                  <div className="text-sm text-gray-600">
+                    Toplam {logs.length} log kaydı
+                  </div>
+                </div>
+              </div>
+              
+              {logs.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="text-6xl mb-4">📝</div>
+                  <p className="text-gray-500">Henüz log kaydı yok</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {logs.map((log) => {
+                    const isExpanded = expandedLogId === log.id
+                    let actionText = ''
+                    let actionColor = 'blue'
+                    let actionEmoji = '📝'
+
+                    switch (log.action) {
+                      case 'CREATE_USER':
+                        actionText = 'Kullanıcı Oluşturdu'
+                        actionColor = 'green'
+                        actionEmoji = '➕'
+                        break
+                      case 'DELETE_USER':
+                        actionText = 'Kullanıcı Sildi'
+                        actionColor = 'red'
+                        actionEmoji = '🗑️'
+                        break
+                      case 'ADD_MANUAL_BONUS':
+                        actionText = 'Manuel Bonus Ekledi'
+                        actionColor = 'yellow'
+                        actionEmoji = '💰'
+                        break
+                      case 'START_GAME':
+                        actionText = 'Oyun Başlattı'
+                        actionColor = 'purple'
+                        actionEmoji = '🎮'
+                        break
+                      default:
+                        actionText = log.action
+                        actionEmoji = '📋'
+                    }
+
+                    return (
+                      <div
+                        key={log.id}
+                        className={`border-2 rounded-lg transition-all ${
+                          actionColor === 'green'
+                            ? 'border-green-200 bg-green-50'
+                            : actionColor === 'red'
+                            ? 'border-red-200 bg-red-50'
+                            : actionColor === 'yellow'
+                            ? 'border-yellow-200 bg-yellow-50'
+                            : actionColor === 'purple'
+                            ? 'border-purple-200 bg-purple-50'
+                            : 'border-blue-200 bg-blue-50'
+                        }`}
+                      >
+                        <div className="p-4">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-start gap-3 flex-1 min-w-0">
+                              <div className="text-2xl flex-shrink-0">{actionEmoji}</div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="font-bold text-gray-800">{log.actor.username}</span>
+                                  <span
+                                    className={`text-sm px-2 py-0.5 rounded ${
+                                      actionColor === 'green'
+                                        ? 'bg-green-200 text-green-900'
+                                        : actionColor === 'red'
+                                        ? 'bg-red-200 text-red-900'
+                                        : actionColor === 'yellow'
+                                        ? 'bg-yellow-200 text-yellow-900'
+                                        : actionColor === 'purple'
+                                        ? 'bg-purple-200 text-purple-900'
+                                        : 'bg-blue-200 text-blue-900'
+                                    }`}
+                                  >
+                                    {actionText}
+                                  </span>
+                                </div>
+
+                                {/* Detay bilgisi */}
+                                {log.payload && (
+                                  <div className="mt-2 text-sm text-gray-700">
+                                    {log.action === 'CREATE_USER' && (
+                                      <>
+                                        <div><strong>Kullanıcı:</strong> {log.payload.username}</div>
+                                        <div><strong>E-posta:</strong> {log.payload.email}</div>
+                                        <div><strong>Rol:</strong> {log.payload.role === 'ADMIN' ? '👑 Admin' : '👤 Öğrenci'}</div>
+                                      </>
+                                    )}
+                                    {log.action === 'DELETE_USER' && (
+                                      <>
+                                        <div><strong>Silinen Kullanıcı:</strong> {log.payload.username}</div>
+                                        <div><strong>Rol:</strong> {log.payload.role === 'ADMIN' ? '👑 Admin' : '👤 Öğrenci'}</div>
+                                      </>
+                                    )}
+                                    {log.action === 'ADD_MANUAL_BONUS' && (
+                                      <>
+                                        <div><strong>Kullanıcı:</strong> {log.payload.username}</div>
+                                        <div><strong>Puan:</strong> +{log.payload.points}</div>
+                                        {log.payload.reason && <div><strong>Sebep:</strong> {log.payload.reason}</div>}
+                                      </>
+                                    )}
+                                    {log.action === 'START_GAME' && (
+                                      <>
+                                        <div><strong>Oyun:</strong> {log.payload.gameCode}</div>
+                                        <div><strong>Hafta:</strong> {log.payload.weekNo}</div>
+                                        {isExpanded && log.targetId && (
+                                          <button
+                                            onClick={async () => {
+                                              try {
+                                                const res = await fetch(`/api/admin/submissions?gameInstanceId=${log.targetId}`)
+                                                const data = await res.json()
+                                                alert(`Oyuna ${data.submissions?.length || 0} kişi katıldı`)
+                                              } catch (error) {
+                                                alert('Katılımcı bilgisi yüklenemedi')
+                                              }
+                                            }}
+                                            className="mt-2 px-3 py-1 bg-purple-200 text-purple-900 rounded text-xs hover:bg-purple-300 transition"
+                                          >
+                                            👁️ Katılımcıları Gör
+                                          </button>
+                                        )}
+                                      </>
+                                    )}
+                                  </div>
+                                )}
+
+                                <div className="mt-2 text-xs text-gray-500">
+                                  {new Date(log.createdAt).toLocaleDateString('tr-TR')} - {new Date(log.createdAt).toLocaleTimeString('tr-TR')}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Genişlet/Daralt Butonu */}
+                            {log.action === 'START_GAME' && log.targetId && (
+                              <button
+                                onClick={() => setExpandedLogId(isExpanded ? null : log.id)}
+                                className="text-gray-500 hover:text-gray-700 flex-shrink-0"
+                              >
+                                {isExpanded ? '▲' : '▼'}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Kullanıcı Ekle */}
           {activeMenu === 'add-user' && (
             <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 max-w-3xl mx-auto">
@@ -712,28 +916,40 @@ export default function AdminPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Öğrenci Numarası
+                      {newUser.role === 'ADMIN' ? 'E-posta (Opsiyonel)' : 'Öğrenci Numarası'}
                     </label>
-                    <div className="relative">
+                    {newUser.role === 'ADMIN' ? (
                       <input
-                        type="text"
-                        value={newUser.email.replace('@stu.iku.edu.tr', '')}
-                        onChange={(e) => {
-                          const number = e.target.value.replace(/\D/g, '').slice(0, 10)
-                          setNewUser({ ...newUser, email: number ? `${number}@stu.iku.edu.tr` : '' })
-                        }}
-                        className="w-full px-4 py-2 pr-48 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-800"
-                        placeholder="2200004567"
-                        pattern="[0-9]{10}"
-                        maxLength={10}
-                        required
+                        type="email"
+                        value={newUser.email}
+                        onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-800"
+                        placeholder="ornek@email.com (opsiyonel)"
                       />
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none">
-                        @stu.iku.edu.tr
+                    ) : (
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={newUser.email.replace('@stu.iku.edu.tr', '')}
+                          onChange={(e) => {
+                            const number = e.target.value.replace(/\D/g, '').slice(0, 10)
+                            setNewUser({ ...newUser, email: number ? `${number}@stu.iku.edu.tr` : '' })
+                          }}
+                          className="w-full px-4 py-2 pr-48 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-800"
+                          placeholder="2200004567"
+                          pattern="[0-9]{10}"
+                          maxLength={10}
+                          required
+                        />
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none">
+                          @stu.iku.edu.tr
+                        </div>
                       </div>
-                    </div>
+                    )}
                     <p className="text-xs text-gray-500 mt-1">
-                      10 haneli öğrenci numarası
+                      {newUser.role === 'ADMIN' 
+                        ? 'Admin için e-posta zorunlu değildir' 
+                        : '10 haneli öğrenci numarası'}
                     </p>
                   </div>
                   <div>

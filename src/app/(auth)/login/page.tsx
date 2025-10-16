@@ -49,9 +49,9 @@ export default function LoginPage() {
       
       {/* Paraşüt 1 - Sol Taraf - Powered by */}
       <div 
-        className="absolute left-1/2 md:left-1/4 transform -translate-x-1/2 z-50 animate-parachute-drop"
+        className="absolute left-1/2 md:left-1/4 transform -translate-x-1/2 z-50 animate-parachute-drop opacity-0"
       >
-        <div className="text-center scale-75 md:scale-100">
+        <div className="flex flex-col items-center scale-75 md:scale-100">
           <div className="text-4xl md:text-6xl mb-2">🪂</div>
           <div className="bg-white/90 backdrop-blur-sm px-3 py-2 md:px-6 md:py-3 rounded-full shadow-lg">
             <p className="text-gray-800 font-semibold text-[10px] md:text-sm whitespace-nowrap">
@@ -64,12 +64,11 @@ export default function LoginPage() {
       {/* Paraşüt 2 - Sağ Taraf - Bilgilendirme */}
       <div 
         className="absolute left-1/2 md:right-1/4 transform -translate-x-1/2 md:translate-x-1/2 z-50 animate-parachute-drop-2 opacity-0"
-        style={{ animationFillMode: 'forwards' }}
       >
-        <div className="text-center scale-75 md:scale-100">
+        <div className="flex flex-col items-center scale-75 md:scale-100">
           <div className="text-4xl md:text-6xl mb-2">🪂</div>
           <div className="bg-white/90 backdrop-blur-sm px-3 py-2 md:px-6 md:py-3 rounded-xl shadow-lg max-w-[150px] md:max-w-xs">
-            <p className="text-gray-800 font-semibold text-[9px] md:text-xs leading-relaxed">
+            <p className="text-gray-800 font-semibold text-[9px] md:text-xs leading-relaxed text-center">
               Sadece admin kullanıcı oluşturabilir.<br />
               Mevcut hesabınız yok ise admin ile iletişime geçin...
             </p>
